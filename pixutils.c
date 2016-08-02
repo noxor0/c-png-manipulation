@@ -60,11 +60,11 @@ static void pixMap_copy(pixMap *dest,pixMap *source) {
 				dest -> pixArray = realloc(dest -> pixArray, sizeof(rgba) * source->height * source -> width);
 			}
 		}
-	}
-	dest->pixArray[0] = (rgba*) dest->image;
-	for(int i = 1; i < source->height; i++) {
-		dest -> pixArray[i] = malloc(sizeof(source->width) * source -> width);
-		dest -> pixArray[i] = dest->pixArray[i-1] + source -> width;
+		dest->pixArray[0] = (rgba*) dest->image;
+		for(int i = 1; i < source->height; i++) {
+			dest -> pixArray[i] = malloc(sizeof(source->width) * source -> width);
+			dest -> pixArray[i] = dest->pixArray[i-1] + source -> width;
+		}
 	}
 	memcpy(dest->image, source->image, sizeof(rgba) * source->height * source -> width);
 	dest->width = source->width;
@@ -87,7 +87,6 @@ void pixMap_destroy(pixMap *p) {
 void pixMap_rotate (pixMap *p, float theta) {
 	pixMap *temp = pixMap_init();
 	pixMap_copy(temp, p);
-
   memset(temp->image, 0, temp->height*temp->width*sizeof(rgba));
 
   float ox = p->width / 2;
@@ -124,8 +123,6 @@ void pixMap_gray (pixMap *p){
 	}
 }
 int pixMap_write(pixMap *p,char *filename){
- 	//write out to filename using lodepng_encode32_file
-	//example is in lodepng/examples - one liner
 	lodepng_encode32_file(filename, p->image, p->width, p->height);
 	return 0;
 }
