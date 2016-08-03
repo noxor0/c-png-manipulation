@@ -36,7 +36,8 @@ static int pixMap_read(pixMap *p,char *filename) {
 	p->pixArray[0] = (rgba*) p->image;
 	int i;
   for(i = 1; i < p->height; i++) {
-      p->pixArray[i] = malloc(sizeof(p->width) * sizeof(p->pixArray));
+			p->pixArray[i] = malloc(sizeof(rgba) * sizeof(p->pixArray));
+
       p->pixArray[i] = p->pixArray[i - 1] + p->width;
   }
 	return 0;
@@ -62,7 +63,6 @@ static void pixMap_copy(pixMap *dest,pixMap *source) {
 		}
 		dest->pixArray[0] = (rgba*) dest->image;
 		for(int i = 1; i < source->height; i++) {
-			dest -> pixArray[i] = malloc(sizeof(source->width) * source -> width);
 			dest -> pixArray[i] = dest->pixArray[i-1] + source -> width;
 		}
 	}
