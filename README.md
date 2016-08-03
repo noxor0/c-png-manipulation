@@ -1,3 +1,10 @@
+#PNG Manipulation
+C program to rotate and gray out pictures. 
+Assignment from TCSS 333. Uses lodePNG.
+
+1.8.16 UW
+
+
 #Assignment 3
 ##TL;DR
 
