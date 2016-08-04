@@ -1,5 +1,6 @@
 #include "pixutils.h"
 #include "lodepng.h"
+#include "bmp.h"
 
 //private methods
 static pixMap *pixMap_init(); //allocate memory for pixMap object, set variables to zero, and return a pointer to the object
@@ -36,8 +37,6 @@ static int pixMap_read(pixMap *p,char *filename) {
 	p->pixArray[0] = (rgba*) p->image;
 	int i;
   for(i = 1; i < p->height; i++) {
-			p->pixArray[i] = malloc(sizeof(rgba) * sizeof(p->pixArray));
-
       p->pixArray[i] = p->pixArray[i - 1] + p->width;
   }
 	return 0;
@@ -106,6 +105,49 @@ void pixMap_rotate (pixMap *p, float theta) {
 
   pixMap_copy(p, temp);
   pixMap_destroy(temp);
+}
+
+void pixMap_write_bmp16(pixMap *p,char *filename) {
+	BMP16_map *b = BMP16_map_init(p->height, p->width, 0, 5, 6, 5);
+	int row;
+	int col;
+	for(row = 0; row < p->height; row++) {
+		for(col = 0; col < p->width; col++) {
+			unsigned short colorVal = 0;
+			int red5 = (p->pixArray[row][col].r & 0xF8) >> 3;
+			int green6 = (p->pixArray[row][col].g & 0xFC) >> 2;
+			int blue5 = (p->pixArray[row][col].b & 0xF8) >> 3;
+			colorVal |= (red5 << 11);
+			colorVal |= (green6 << 5);
+			colorVal |= (blue5);
+			b->pixArray[(p->height - row) - 1][col] = colorVal;
+		}
+	}
+	BMP16_write(b, filename);
+	BMP16_map_destroy(b);
+}
+
+static int sum(rgba *p) {
+	return p->r + p->b + p->g;
+}
+
+static int compare(const void *a, const void *b) {
+	rgba *arr1 = (rgba *)a;
+  rgba *arr2 = (rgba *)b;
+	//ret is a negative value, then first is smaller than second
+	//ret is a positive value, then second is smaller than first
+	//ret is zero, then values are equal
+	int sum1 = sum(arr1);
+	int sum2 = sum(arr2);
+ 	return sum1-sum2;
+}
+
+// void qsort(void *base, size_t nitems, size_t size, int (*compar)(const void *, const void*));
+// qsort(values, 5, sizeof(int), cmpfunc);
+void pixMap_sort(pixMap *p) {
+	compare(&(p->pixArray[0][0]), &(p->pixArray[1][0]) );
+		// qsort(&p->pixArray, 10, sizeof(rgba), compare);
+
 }
 
 void pixMap_gray (pixMap *p){

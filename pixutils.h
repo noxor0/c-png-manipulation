@@ -22,7 +22,7 @@ typedef struct rgba{
 
 typedef struct{
 	unsigned char *image;
-  rgba **pixArray;
+ rgba **pixArray;
 	unsigned int width;
 	unsigned int height;
 }pixMap;
@@ -34,6 +34,10 @@ void pixMap_destroy (pixMap *p); //call pixMap_reset, free p and set pointer to 
 
 //public methods
 int pixMap_write(pixMap *p,char *filename); //use lodepng to write to a file
-void pixMap_write_bmp16(pixMap *p,char *filename); //convert to correct format
 void pixMap_rotate (pixMap *p, float theta); //rotate the pixMap
 void pixMap_gray(pixMap *p); //gray out the colors of the pixMap
+
+//ASSIGNMENT 4 FUNCTIONS
+void pixMap_write_bmp16(pixMap *p,char *filename); //write 16 bit bmp to output file
+void pixMap_sort(pixMap *p); //sort colors of the pixMap by total of r,g,b values
+
