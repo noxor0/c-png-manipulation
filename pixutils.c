@@ -142,12 +142,22 @@ static int compare(const void *a, const void *b) {
  	return sum1-sum2;
 }
 
-// void qsort(void *base, size_t nitems, size_t size, int (*compar)(const void *, const void*));
-// qsort(values, 5, sizeof(int), cmpfunc);
+		// qsort(p->pixArray[row], p->width-1, sizeof(rgba), compare);
 void pixMap_sort(pixMap *p) {
-	compare(&(p->pixArray[0][0]), &(p->pixArray[1][0]) );
-		// qsort(&p->pixArray, 10, sizeof(rgba), compare);
-
+	rgba pixelArr[p->height * p->width];
+	int row;
+	int col;
+	for(row = 0; row < p->height; row++) {
+		for(col = 0; col < p->width; col++) {
+			pixelArr[row * p->width + col] = p->pixArray[row][col];
+		}
+	}
+	qsort(pixelArr, p->width * p->height, sizeof(rgba), compare);
+	for(row = 0; row < p->height; row++) {
+		for(col = 0; col < p->width; col++) {
+			p->pixArray[row][col] = pixelArr[row * p->width + col];
+		}
+	}
 }
 
 void pixMap_gray (pixMap *p){
